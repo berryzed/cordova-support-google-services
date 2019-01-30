@@ -2,16 +2,31 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        google()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:+'
-        classpath 'com.google.gms:google-services:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
-// apply plugin: 'com.google.gms.google-services'
-// class must be used instead of id(string) to be able to apply plugin from non-root gradle file
-ext.postBuildExtras = {
-    apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+    mavenCentral()
+    jcenter()
 }
+
+apply plugin: 'com.google.gms.google-services'
+// class must be used instead of id(string) to be able to apply plugin from non-root gradle file
+// ext.postBuildExtras = {
+//     apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+// }
+cdvPluginPostBuildExtras.add({
+    if(project.plugins.findPlugin("com.google.gms.google-services") == null) {
+        apply plugin: com.google.gms.googleservices.GoogleServicesPlugin
+        // com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+    }
+})
